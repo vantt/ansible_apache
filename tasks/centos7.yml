@@ -1,0 +1,34 @@
+---
+
+- name: Install rpmforge repository
+  yum: name=http://pkgs.repoforge.org/rpmforge-release/rpmforge-release-0.5.3-1.el7.rf.x86_64.rpm state=present
+
+- name: Install Apache
+  yum: name={{item}} state=present enablerepo=rpmforge
+  with_items: 
+    - httpd
+    - mod_xsendfile
+  notify:
+    - Start Apache
+
+- name: Create additional settings directory structure
+  file: path={{item}} state=directory
+  with_items: 
+    - /etc/httpd/sites-available
+    - /etc/httpd/sites-enabled
+
+- lineinfile: dest=/etc/httpd/conf/httpd.conf line='Include sites-enabled/*'
+
+- name: Create Default VHost file
+  copy: src=default_vhost dest=/etc/httpd/sites-available/default
+
+- file: src=/etc/httpd/sites-available/default  dest=/etc/httpd/sites-enabled/000-default state=link
+
+- name: Create Apache Log-rotate
+  copy: src=logrotate dest=/etc/logrotate.d/httpd
+
+- name: Create HealthCheck file
+  copy: src=health_check.html dest=/var/www/html/health-check.html
+  notify:
+    - Start Apache
+

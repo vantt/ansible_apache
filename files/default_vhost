@@ -1,0 +1,13 @@
+# Default Vhost
+<VirtualHost *:80>
+    ServerName default
+    UseCanonicalName Off
+    DocumentRoot /var/www/html
+
+    <Location /server-status>
+        SetHandler server-status
+        Order deny,allow
+        Deny from all
+        Allow from 127.0.0.1
+    </Location>
+</VirtualHost>
