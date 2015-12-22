@@ -17,7 +17,7 @@
     - /etc/httpd/sites-available
     - /etc/httpd/sites-enabled
 
-- lineinfile: dest=/etc/httpd/conf/httpd.conf line='Include sites-enabled/*'
+- lineinfile: dest=/etc/httpd/conf/httpd.conf line='IncludeOptional sites-enabled/*'
 
 - name: Create Default VHost file
   copy: src=default_vhost dest=/etc/httpd/sites-available/default
